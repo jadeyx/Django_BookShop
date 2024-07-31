@@ -1,0 +1,30 @@
+{% extends "base_generic.html" %}
+
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/collection.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="collection-container">
+    <h1>收藏列表</h1>
+
+    <form id="delete-collection" action="{% url 'delete_collection' %}" method="post">
+        {% csrf_token %}
+        {% if collection_item %}
+        <ul class="collection-list">
+            {% for collection in collection_item %}
+            <li class="collection-item">
+                <input type="checkbox" name="collection_ids" value="{{ collection.id }}" class="collection-checkbox"/>
+                <a href="{{ collection.book.get_absolute_url }}" class="book-link">{{ collection.book.name }}</a>
+                <span class="book-price">{{ collection.book.list_price }}￥</span>
+            </li>
+            {% endfor %}
+        </ul>
+        <button type="submit" class="btn btn-danger">删除选中的收藏项</button>
+        {% else %}
+        <p>当前收藏夹空空如也~~~快去添加点东西吧！</p>
+        {% endif %}
+    </form>
+</div>
+{% endblock %}

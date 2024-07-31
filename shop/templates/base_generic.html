@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}BookShop{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    {% block extra_css %}
+    {% endblock %}
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'index' %}" class="home">Home</a></li>
+                <form method="post"  id="searchForm" action="{% url 'book_search' %}">
+                {% csrf_token %}
+                <input type="text" id="search" name="search_text" placeholder="Search for books..." autocomplete="off">
+                <button type="submit" style="display: none; pointer-events: none;">Search</button>
+                </form>
+                {% if user.is_authenticated %}
+                    {% if user.image %}
+                        <img src="{{ user.image.url }}" alt="用户头像" class="avatar" id="avatarButton">
+                    {% else %}
+                        <img src="{% static 'images/default.jpg' %}" alt="默认头像" class="avatar" id="avatarButton">
+                    {% endif %}
+                {% else %}
+                <li><a href="{% url 'login' %}">login in</a></li>
+                <li><a href="{% url 'register' %}">Sign up</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 BookShop. All rights reserved.</p>
+    </footer>
+    
+    {% if user.is_authenticated %}
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-content">
+            <span class="close-btn" id="closeButton">&times;</span>
+            <ul>
+                <li class="user-info">
+                {% if user.image %}
+                    <img src="{{ user.image.url }}" alt="用户头像" class="avatar2">
+                {% else %}
+                    <img src="{% static 'images/default.jpg' %}" alt="默认头像" class="avatar2">
+                {% endif %}
+                <span class="username">{{ user.username }}</span>
+                </li>
+                <li><a href="{% url 'user_detail' user.id %}">Your Profile</a></li>
+                <li><a href="{% url 'cart' %}">Your Cart</a></li>
+                <li><a href="{% url 'collection' %}">Your Collection</a></li>
+                <li><a href="{% url 'comment' %}">Your Comment</a></li>
+                <li><a href="{% url 'order_list' %}">Your Order</a></li>
+                {% if user.is_superuser %}
+                <li><a href="{% url 'admin:index' %}">Admin</a></li>
+                {% endif %}
+                <li>
+                    <form method="POST" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-btn">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+
+    <script src="{% static 'js/script.js' %}"></script>
+    {% block extra_js %}
+    {% endblock %}
+    <script>
+    document.getElementById('search').addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            document.getElementById('searchForm').submit();
+        }
+    });
+    </script>
+</body>
+</html>

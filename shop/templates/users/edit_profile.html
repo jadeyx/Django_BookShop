@@ -1,0 +1,68 @@
+{% extends 'base_generic.html' %}
+
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/edit.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-section">
+            {{ form.non_field_errors }}
+            <div class="fieldWrapper">
+                {{ form.username.errors }}
+                <label for="{{ form.username.id_for_label }}">用户名:</label>
+                {{ form.username }}
+            </div>
+            <div class="fieldWrapper">
+                {{ form.email.errors }}
+                <label for="{{ form.email.id_for_label }}">电子邮箱:</label>
+                {{ form.email }}
+            </div>
+            <div class="fieldWrapper">
+                {{ form.address.errors }}
+                <label for="{{ form.address.id_for_label }}">地址:</label>
+                {{ form.address }}
+            </div>
+            <div class="fieldWrapper">
+                {{ form.password1.errors }}
+                <label for="{{ form.password1.id_for_label }}">新密码:</label>
+                {{ form.password1 }}
+            </div>
+            <div class="fieldWrapper">
+                {{ form.password2.errors }}
+                <label for="{{ form.password2.id_for_label }}">确认新密码:</label>
+                {{ form.password2 }}
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top: 10px;margin-left:50%;">保存</button>
+        </div>
+        <div class="avatar-section">
+            <div class="avatar-container">
+                {% if user.image %}
+                    <img src="{{ user.image.url }}" alt="用户头像" class="profile-avatar" id="avatar">
+                {% else %}
+                    <img src="{% static 'images/default.jpg' %}" alt="默认头像" class="profile-avatar" id="avatar">
+                {% endif %}
+                <div class="edit-button" onclick="document.getElementById('file-input').click();">Edit</div>
+                <input type="file" class="custom-file-input" id="file-input" name="image" onchange="changeAvatar(this)">
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function changeAvatar(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('avatar').src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+{% endblock %}

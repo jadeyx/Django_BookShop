@@ -1,0 +1,36 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}Order{% endblock %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/order.css' %}">
+{% endblock %}
+{% block content %}
+<div class="order-container">
+    <h1>订单详情</h1>
+    <table class="order-table">
+        <thead>
+            <tr>
+                <th>图片</th>
+                <th>商品名称</th>
+                <th>数量</th>
+                <th>单价</th>
+                <th>总价</th>
+                <th>状态</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in orders %}
+            <tr>
+                <td><a href="{{ item.get_absolute_url }}"><img src="{{ item.book.image.url }}" alt="{{ item.book.name }}" class="book-image"></a></td>
+                <td><a href="{% url 'book_detail' item.book.id %}">{{ item.book.name }}</a></td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.book.list_price }}</td>
+                <td>{{ item.total_price }}</td>
+                <td>{{ item.status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

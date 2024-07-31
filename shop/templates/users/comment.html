@@ -1,0 +1,32 @@
+{% extends "base_generic.html" %}
+
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/comment.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="comment-container">
+    <h1>评论列表</h1>
+
+    {% if comment_item %}
+    <ul class="comment-list">
+        {% for comment in comment_item %}
+        <li class="comment-item">
+            <div class="comment-header">
+                <a href="{{ comment.book.get_absolute_url }}" class="book-link">{{ comment.book.name }}</a>
+                <span class="comment-date">{{ comment.comment_date|date:"Y-m-d H:i" }}</span>
+            </div>
+            <p class="comment-text">{{ comment.text_content }}</p>
+            <div class="comment-footer">
+                <span class="comment-user">评论者: {{ comment.user.username }}</span>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>当前评论空空如也~~~</p>
+    {% endif %}
+</div>
+{% endblock %}
+

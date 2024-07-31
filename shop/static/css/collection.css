@@ -1,0 +1,58 @@
+.collection-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.collection-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.collection-item {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+}
+
+.collection-checkbox {
+    margin-right: 15px;
+}
+
+.book-link {
+    flex: 1;
+    font-weight: bold;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.book-link:hover {
+    text-decoration: underline;
+}
+
+.book-price {
+    font-size: 1em;
+    color: #333;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}

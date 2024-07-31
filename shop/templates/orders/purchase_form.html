@@ -1,0 +1,12 @@
+<form id="purchase-form" method="post" action="{% url 'checkout_sum' %}">
+    {% csrf_token %}
+    {{ form.address.label_tag }} {{ form.address }}
+    {{ form.zip_code.label_tag }} {{ form.zip_code }}
+    {{ form.tel.label_tag }} {{ form.tel }}
+    {{ form.cart_ids }}
+    <div class="text-center">
+        <button type="submit" class="btn btn-success" style="margin-top: 10px;">提交订单</button>
+    </div>
+</form>
+
+

@@ -1,0 +1,30 @@
+{% extends 'user_generic.html' %} {% block title %}登录 - BookShop{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">登录</h1>
+    {% if form.errors %}
+        <p class="text-danger text-center">您的用户名和密码不匹配，请重试。</p>
+    {% endif %}
+    {% if next %}
+        {% if user.is_authenticated %}
+            <p class="text-danger text-center">您的账户没有访问此页面的权限。请使用有权限的账户登录。</p>
+        {% else %}
+            <p class="text-danger text-center">请登录以查看此页面。</p>
+        {% endif %}
+    {% endif %}
+    <form method="post" class="mt-4">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ form.username.label_tag }} {{ form.username }}
+        </div>
+        <div class="form-group">
+            {{ form.password.label_tag }} {{ form.password }}
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">登录</button>
+    </form>
+    <p class="text-center mt-3">
+        还没有账号？ <a href="{% url 'register' %}">注册</a>
+    </p>
+    <p><a href="{% url 'password_reset' %}">忘记密码 ？ </a></p>
+</div>
+{% endblock %}

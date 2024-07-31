@@ -1,0 +1,196 @@
+{% extends "base_generic.html" %}
+
+{% block title %}Cart{% endblock %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/cart.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="cart-container">
+    <h1>全部商品 ({{ cart_item|length }})</h1>
+    <form id="delete-cart" action="{% url 'change_cart' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" id="move-to-collection" name="move_to_collection" value="false">
+        <div class="cart-header">
+            <div class="left-header">
+                <input type="checkbox" id="select-all" />
+                <label for="select-all">全选</label>
+            </div>
+            <div class="right-header">
+                <button type="button" class="move-btn">移入收藏夹</button>
+                <button type="submit" class="delete-btn">删除</button>
+            </div>
+        </div>
+        <ul class="cart-list">
+            {% for cart in cart_item %}
+            <li class="cart-item">
+                <div class="item-details">
+                    <input type="checkbox" class="cart-checkbox" name="cart_ids" value="{{ cart.id }}" />
+                    <img src="{{ cart.book.image.url }}" class="cart-item-image" alt="{{ cart.book.name }}">
+                    <div class="item-info">
+                        <a href="{{ cart.book.get_absolute_url }}">{{ cart.book.name }}</a>
+                        <p>￥{{ cart.book.list_price }} x {{ cart.quantity }}</p>
+                    </div>
+                </div>
+                <div class="item-actions">
+                    <button type="button" onclick="addToCollection({{ cart.id }}, '{% url 'move_to_collection' cart.id %}'); return false;">移入收藏夹</button>
+                    <button type="button" onclick="deleteCartItem({{ cart.id }},'{% url 'delete_cart_item' cart.id %}'); return false;">删除</button>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </form>
+
+    {% if not cart_item %}
+    <p>当前购物车空空如也~~~快去添加点东西吧！</p>
+    {% endif %}
+</div>
+<div class="cart-footer">
+    <p class="total-price">合计: ￥<span id="total-price">{{ total_price }}</span></p>
+    <button type="button" class="checkout-btn">结算</button>
+</div>
+
+<div id="purchase-form-container" class="purchase-form-container">
+    <div class="purchase-form-content">
+        <button type="button" class="close-btn" onclick="closePurchaseForm()"><i class="fas fa-times"></i></button>
+        <div id="purchase-form-placeholder"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        function updateTotalPrice() {
+            var selectedIds = $('input.cart-checkbox:checked').map(function() {
+                return $(this).val();
+            }).get();
+
+            $.ajax({
+                url: "{% url 'update_total_price' %}",
+                method: "POST",
+                data: {
+                    'cart_ids': selectedIds,
+                    'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
+                },
+                success: function(response) {
+                    $('#total-price').text(response.total_price);
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
+
+        $('#select-all').change(function() {
+            $('input.cart-checkbox').prop('checked', $(this).prop('checked'));
+            updateTotalPrice();
+        });
+
+        $('input.cart-checkbox').change(function() {
+            updateTotalPrice();
+        });
+
+        $('.move-btn').click(function() {
+            $('#move-to-collection').val('true');
+            $('#delete-cart').submit();
+        });
+
+        $('.checkout-btn').click(function() {
+    var selectedIds = $('input.cart-checkbox:checked').map(function() {
+        return $(this).val();
+    }).get();
+
+    if (selectedIds.length === 0) {
+        alert('请选择要结算的商品');
+        return;
+    }
+
+    $.ajax({
+        url: "{% url 'get_purchase_form' %}",
+        method: "POST",
+        data: {
+            'cart_ids': selectedIds,
+            'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
+        },
+        success: function(response) {
+            $('#purchase-form-placeholder').html(response.form);
+            $('#purchase-form-container').addClass('show');
+            $('#id_cart_ids').val(selectedIds.join(','));
+        },
+        error: function(xhr, status, error) {
+            console.error(error);
+        }
+    });
+});
+
+
+        $('.close-btn').click(function() {
+            $('#purchase-form-container').removeClass('show');
+        });
+    });
+
+    document.getElementById('select-all').addEventListener('change', function() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"][name="cart_ids"]');
+        checkboxes.forEach(checkbox => checkbox.checked = this.checked);
+    });
+
+    document.getElementById('delete-cart').addEventListener('submit', function(event) {
+        if (!confirm('确定要删除选中的商品吗？')) {
+            event.preventDefault();
+        }
+    });
+
+    function deleteCartItem(cartId, url) {
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+        },
+        body: JSON.stringify({
+            cart_id: cartId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+
+    function addToCollection(cartId, url) {
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+            },
+            body: JSON.stringify({
+                cart_id: cartId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert(data.message);
+                location.reload();
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+</script>
+{% endblock %}

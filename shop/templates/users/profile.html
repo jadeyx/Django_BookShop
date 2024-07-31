@@ -1,0 +1,28 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}User Profile{% endblock %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/userinfo.css' %}">
+{% endblock %}
+{% block content %}
+<div class="user-profile">
+    <div class="user-header">
+        <div class="left-side">
+            {% if user.image %}
+              <img src="{{ user.image.url }}" alt="用户头像" class="user-avatar">
+            {% else %}
+              <img src="{% static 'images/default.jpg' %}" alt="默认头像" class="user-avatar">
+            {% endif %}
+            <a href="{% url 'edit_profile' user.id %}" class="edit-profile-button">Edit profile</a>
+        </div>
+        <div class="right-side">
+            <p class="mb-2"><strong>name:</strong> {{ user.username }}</p>
+            <p class="mb-2"><strong>Email:</strong> {{ user.email }}</p>
+            <p class="mb-2"><strong>Address:</strong> {{ user.address }}</p>
+            <p class="mb-2"><strong>Amount:</strong> {{ user.amount }}</p>
+            <p class="mb-2"><strong>Date_joined:</strong> {{ user.date_joined }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

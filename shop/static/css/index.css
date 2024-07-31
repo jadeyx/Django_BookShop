@@ -1,0 +1,18 @@
+.pagination-container {
+    position: fixed;
+    left: 0;
+    top: 40%;
+    bottom: 0;
+    width: 100px;
+    overflow-y: auto;
+    background-color: transparent;
+    padding: 10px;
+}
+
+.pagination-container .pagination {
+    flex-direction: column;
+}
+
+.pagination-container .page-item {
+    margin-bottom: 5px;
+}

@@ -1,0 +1,25 @@
+{% extends 'user_generic.html' %} {% block title %}注册 - BookShop{% endblock %}
+{% block content %}
+<div class="container mt-5">
+	<h1 class="text-center">注册</h1>
+	<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {% if errors %}
+        <div class="error">
+            <ul>
+                {% for field, error_list in errors.items %}
+                    {% for error in error_list %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    <button type="submit" class="btn btn-primary">Register</button>
+</form>
+	<p class="text-center mt-3">
+		已有账号？ <a href="{% url 'login' %}">登录</a>
+	</p>
+</div>
+{% endblock %}
