@@ -26,7 +26,7 @@
 5. 启动开发服务器: `python manage.py runserver`
 
 ## 注意事项
-在 `settings.py` 和 `.env` 文件中设置相应的用于密码重置的邮箱。以下是具体步骤：
+* 在 `settings.py` 和 `.env` 文件中设置相应的用于密码重置的邮箱。以下是具体步骤：
 
 1. 在项目根目录下创建一个 `.env` 文件。
 2. 在 `.env` 文件中添加以下内容，替换为你的实际邮箱配置：
@@ -42,7 +42,7 @@
 3. 在 `settings.py` 文件中，添加以下配置以读取 `.env` 文件中的邮箱设置：
     ```python
     from decouple import config
-    
+
     EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
     EMAIL_HOST = config('EMAIL_HOST', default='')
     EMAIL_PORT = config('EMAIL_PORT', cast=int, default=587)
@@ -51,3 +51,12 @@
     EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
     DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='')
     ```
+
+* 在项目根目录下创建一个 media 文件夹用于保存上传的书本图片和用户图片，文件夹目录为：
+  ```
+  media
+    -book_images
+    -user_images
+  ```
+
+* 在 `shop/static` 下建立images文件夹存放默认头像 `default.jpg`

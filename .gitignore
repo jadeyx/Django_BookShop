@@ -23,3 +23,6 @@ Thumbs.db
 .idea/
 .vscode/
 node_modules/
+
+*/migrations/*.py
+!*/migrations/__init__.py
